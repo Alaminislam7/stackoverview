@@ -29,14 +29,14 @@ class VotablesTableSeeder extends Seeder
             }
         }
 
-        // foreach (Answer::all() as $answer)
-        // {
-        //     for ($i = 0; $i < rand(1, $numberOfUsers); $i++)
-        //     {
-        //         $user = $users[$i];
-        //         $user->voteAnswer($answer, $votes[rand(0, 1)]);
-        //     }
-        // }
+        foreach (Answer::all() as $answer)
+        {
+            for ($i = 0; $i < rand(1, $numberOfUsers); $i++)
+            {
+                $user = $users[$i];
+                $user->voteAnswer($answer, $votes[rand(0, 1)]);
+            }
+        }
     }
 }
 

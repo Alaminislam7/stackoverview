@@ -7,7 +7,10 @@ use Illuminate\Support\Str;
 
 class Question extends Model
 {
+    use VotableTrait;
     protected $fillable = ['title', 'body'];
+
+    protected $appends = ['created_date'];
 
     public function user()
     {
@@ -45,12 +48,12 @@ class Question extends Model
 
     public function getBodyHtmlAttribute()
     {
-        return \Parsedown::instance()->text($this->body);
+        return clean($this->bodyHtml());
     }
 
     public function answers()
     {
-        return $this->hasMany(Answer::class);
+        return $this->hasMany(Answer::class)->orderBy('votes_count', 'DESC');
     }
 
     public function acceptBestAnswer(Answer $answer)
@@ -79,18 +82,19 @@ class Question extends Model
         return $this->favorites->count();
     }
 
-    public function votes()
+    public function getExcerptAttribute()
     {
-        return $this->morphToMany(User::class, 'votable');
+        return $this->excerpt(250);
     }
 
-    public function upVotes()
+    public function excerpt($length)
     {
-        return $this->votes()->wherePivot('vote', 1);
+        return str_limit(strip_tags($this->bodyHtml()), $length);
     }
 
-    public function downVotes()
+    private function bodyHtml()
     {
-        return $this->votes()->wherePivot('vote', -1);
+        return \Parsedown::instance()->text($this->body);
     }
+
 }
