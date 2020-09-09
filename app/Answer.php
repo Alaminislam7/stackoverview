@@ -9,7 +9,7 @@ class Answer extends Model
     use VotableTrait;
     protected $fillable = ['body', 'user_id'];
 
-    protected $appends = ['created_date'];
+    protected $appends = ['created_date', 'body_html'];
     
     public function question()
     {
